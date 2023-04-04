@@ -5,47 +5,9 @@
 #include <stdio.h>
 #include "patient.hpp"
 #include "appointment.hpp"
+#include "password.hpp"
 
 using namespace std;
-
-bool verifyPassword()
-{
-    int tries = 0;
-    char password[20], my_password[20] = "Parola123";
-    int i;
-    char ch;
-
-    system("cls"); // Clear console
-
-    cout << "PASSWORD: ";
-
-    i = 0;
-
-    do
-    {
-        ch = getch(); // Get character from console
-        password[i] = ch;
-
-        if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
-            putch('*');           // Display asterisk to mask the entered character
-        else
-            break; // If "Esc" or "Enter" is pressed exit loop
-        i++;
-
-    } while (i < 19);
-    password[i] = '\0'; // Adds a null terminator to the end of the password array
-
-    if (strcmp(password, my_password) != 0) // Checks if the user input matches the password
-    {
-        tries++;
-        cout << "\n\nIncorrect password !!!\n";
-        _getch();
-        return false; // Return false if the password is incorrect
-    }
-    cout << "\n\nThe password is correct so the profram is exectued !";
-    return true;
-    _getch();
-}
 
 void displayMenu()
 {
@@ -58,10 +20,11 @@ void displayMenu()
     cout << "4. Schedule an appointment" << endl;
     cout << "5. Edit patient records" << endl;
     cout << "6. Generate statistics" << endl;
-    cout << "7. Help" << endl;
-    cout << "8. Exit" << endl;
+    cout << "7. Change password" << endl;
+    cout << "8. Help" << endl;
+    cout << "9. Exit" << endl;
     cout << "==================================" << endl;
-    cout << "Enter your choice (1-8): ";
+    cout << "Enter your choice (1-9): ";
 }
 
 void help()
@@ -106,10 +69,13 @@ int main()
                 generateStatistics();
                 break;
             case 7:
-                help();
+                changePassword();
                 break;
             case 8:
-
+                help();
+                break;
+            case 9:
+                exit(0);
                 break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
