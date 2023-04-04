@@ -15,7 +15,7 @@ bool verifyPassword()
     int i;
     char ch;
 
-    system("cls");
+    system("cls"); // Clear console
 
     cout << "PASSWORD: ";
 
@@ -23,24 +23,24 @@ bool verifyPassword()
 
     do
     {
-        ch = getch();
+        ch = getch(); // Get character from console
         password[i] = ch;
 
-        if (ch != 27 && ch != 13)
-            putch('*');
+        if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
+            putch('*');           // Display asterisk to mask the entered character
         else
-            break;
+            break; // If "Esc" or "Enter" is pressed exit loop
         i++;
 
     } while (i < 19);
-    password[i] = '\0';
+    password[i] = '\0'; // Adds a null terminator to the end of the password array
 
-    if (strcmp(password, my_password) != 0)
+    if (strcmp(password, my_password) != 0) // Checks if the user input matches the password
     {
         tries++;
         cout << "\n\nIncorrect password !!!\n";
         _getch();
-        return false;
+        return false; // Return false if the password is incorrect
     }
     cout << "\n\nThe password is correct so the profram is exectued !";
     return true;
@@ -70,7 +70,7 @@ void help()
     cout << "This program is a simple hospital management system." << endl;
     cout << "It allows you to add, view patient records, as well as schedule and view appointments." << endl;
     cout << "To use the program, select one of the 8 possible options." << endl;
-    _getch();
+    _getch(); // Awat press of a key
 }
 
 int main()
