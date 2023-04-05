@@ -460,8 +460,27 @@ void deletePatient()
 
     if (found)
     {
-        remove("patients.txt");
-        rename("temp.txt", "patients.txt");
+        // reopen the files to read and write the shifted data
+        inputFile.open("temp.txt");
+        outputFile.open("patients.txt");
+
+        // shift the data up by one line
+        string prevLine;
+        while (getline(inputFile, line))
+        {
+            if (!prevLine.empty())
+            {
+                outputFile << prevLine << endl;
+            }
+            prevLine = line;
+        }
+
+        inputFile.close();
+        remove("temp.txt");
+
+        // write the last line to the output file
+        outputFile << prevLine << endl;
+
         cout << "Patient details deleted successfully!" << endl;
     }
     else

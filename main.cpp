@@ -26,7 +26,7 @@ void displayMenu()
     cout << "10. Help" << endl;
     cout << "11. Exit" << endl;
     cout << "==================================" << endl;
-    cout << "Enter your choice (1-9): ";
+    cout << "Enter your choice (1-11): ";
 }
 
 void help()
