@@ -24,16 +24,23 @@ bool verifyPassword()
 
         do
         {
-            ch = getch(); // Get character from console
-            password[i] = ch;
+            ch = getch();            // Get character from console
+            if (ch == '\b' && i > 0) // Check if the backspace key is pressed and there are characters to erase
+            {
+                i--;
+                cout << "\b \b"; // Move cursor back and overwrite the character with a space
+            }
 
-            if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
-                putch('*');           // Display asterisk to mask the entered character
+            else if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
+            {
+                password[i] = ch;
+                putch('*'); // Display asterisk to mask the entered character
+                i++;
+            }
             else
                 break; // If "Esc" or "Enter" is pressed exit loop
-            i++;
-
         } while (i < 19);
+
         password[i] = '\0'; // Adds a null terminator to the end of the password array
 
         // Open password file and read the stored password
@@ -85,15 +92,21 @@ void changePassword()
     i = 0;
     do
     {
-        ch = getch(); // Get character from console
-        currentPassword[i] = ch;
+        ch = getch();            // Get character from console
+        if (ch == '\b' && i > 0) // Check if the backspace key is pressed and there are characters to erase
+        {
+            i--;
+            cout << "\b \b"; // Move cursor back and overwrite the character with a space
+        }
 
-        if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
-            putch('*');           // Display asterisk to mask the entered character
+        else if (ch != 27 && ch != 13)
+        { // Check if the character is "Esc" or "Enter"
+            currentPassword[i] = ch;
+            putch('*'); // Display asterisk to mask the entered character
+            i++;
+        }
         else
             break; // If "Esc" or "Enter" is pressed exit loop
-        i++;
-
     } while (i < 19);
     currentPassword[i] = '\0'; // Adds a null terminator to the end of the currentPassword array
 
@@ -123,11 +136,18 @@ void changePassword()
     i = 0;
     do
     {
-        ch = getch(); // Get character from console
-        newPassword[i] = ch;
-
-        if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
-            putch('*');           // Display asterisk to mask the entered character
+        ch = getch();            // Get character from console
+        if (ch == '\b' && i > 0) // Check if the backspace key is pressed and there are characters to erase
+        {
+            i--;
+            cout << "\b \b"; // Move cursor back and overwrite the character with a space
+        }
+        else if (ch != 27 && ch != 13)
+        { // Check if the character is "Esc" or "Enter"
+            newPassword[i] = ch;
+            putch('*'); // Display asterisk to mask the entered character
+            i++;
+        }
         else
             break; // If "Esc" or "Enter" is pressed exit loop
         i++;
