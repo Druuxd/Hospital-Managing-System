@@ -160,14 +160,21 @@ void changePassword()
     i = 0;
     do
     {
-        ch = getch(); // Get character from console
-        confirmPassword[i] = ch;
+        ch = getch();            // Get character from console
+        if (ch == '\b' && i > 0) // Check if the backspace key is pressed and there are characters to erase
+        {
+            i--;
+            cout << "\b \b"; // Move cursor back and overwrite the character with a space
+        }
 
-        if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
-            putch('*');           // Display asterisk to mask the entered character
+        else if (ch != 27 && ch != 13) // Check if the character is "Esc" or "Enter"
+        {
+            confirmPassword[i] = ch;
+            putch('*'); // Display asterisk to mask the entered character
+            i++;
+        }
         else
             break; // If "Esc" or "Enter" is pressed exit loop
-        i++;
 
     } while (i < 19);
     confirmPassword[i] = '\0'; // Adds a null terminator to the end of the confirmPassword array
