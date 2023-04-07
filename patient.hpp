@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <vector>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -327,4 +328,154 @@ void generateStatistics()
     {
         cout << "Error opening file." << endl;
     }
+}
+
+void editPatientDetails()
+{
+    string name, gender, address, phone, line;
+    int age;
+
+    // Get the name of the patient to be edited
+    cout << "Enter the name of the patient to edit: ";
+    getline(cin >> ws, name);
+
+    // Open the patients file for both reading and writing
+    fstream file("patients.txt");
+    if (file.is_open())
+    {
+        // Use a temporary file to store the updated patient data
+        ofstream tempFile("temp.txt");
+
+        bool patientFound = false;
+        while (getline(file, line))
+        {
+            // Create a stringstream from the line read from the file
+            stringstream ss(line);
+
+            // Parse the patient data from the stringstream
+            string token;
+            vector<string> tokens;
+            while (getline(ss, token, ','))
+            {
+                tokens.push_back(token);
+            }
+
+            // If the patient is found, allow the user to edit their details
+            if (tokens.size() == 5 && tokens[0] == name)
+            {
+                patientFound = true;
+
+                // Get the updated patient details from the user
+                cout << "Enter the patient's new age: ";
+                cin >> age;
+
+                cout << "Enter the patient's new gender(M/F): ";
+                getline(cin >> ws, gender);
+
+                cout << "Enter the patient's new address: ";
+                getline(cin >> ws, address);
+
+                cout << "Enter the patient's new phone number: ";
+                getline(cin >> ws, phone);
+
+                // Write the updated patient data to the temporary file
+                tempFile << name << "," << age << "," << gender << "," << address << "," << phone << endl;
+
+                cout << "Patient details updated successfully!" << endl;
+            }
+            else
+            {
+                // If the patient is not found, write their data to the temporary file as-is
+                tempFile << line << endl;
+            }
+        }
+
+        // Close the file streams
+        file.close();
+        tempFile.close();
+
+        // Delete the old patients file and rename the temporary file to the original file name
+        remove("patients.txt");
+        rename("temp.txt", "patients.txt");
+
+        // If the patient was not found, display an error message
+        if (!patientFound)
+        {
+            cout << "Patient not found." << endl;
+        }
+    }
+    else
+    {
+        cout << "Error opening file." << endl;
+    }
+
+    _getch();
+}
+
+void deletePatient()
+{
+    cout << "=== Delete a Patient ===" << endl;
+
+    string name;
+    cout << "Enter the patient's name: ";
+    getline(cin >> ws, name);
+
+    ifstream inputFile("patients.txt");
+    ofstream outputFile("temp.txt");
+
+    bool found = false;
+    string line;
+
+    while (getline(inputFile, line))
+    {
+        size_t pos = 0;
+        string token;
+        vector<string> tokens;
+
+        while ((pos = line.find(",")) != string::npos)
+        {
+            token = line.substr(0, pos);
+            tokens.push_back(token);
+            line.erase(0, pos + 1);
+        }
+
+        tokens.push_back(line);
+
+        if (tokens.size() == 5)
+        {
+            if (tokens[0] == name)
+            {
+                found = true;
+            }
+            else
+            {
+                outputFile << tokens[0] << ",";
+                outputFile << tokens[1] << ",";
+                outputFile << tokens[2] << ",";
+                outputFile << tokens[3] << ",";
+                outputFile << tokens[4] << endl;
+            }
+        }
+    }
+
+    inputFile.close();
+    outputFile.close();
+
+    if (found)
+    {
+        // delete the original file
+        remove("patients.txt");
+
+        // rename the temporary file to the original file name
+        rename("temp.txt", "patients.txt");
+
+        cout << "Patient details deleted successfully!" << endl;
+    }
+    else
+    {
+        remove("temp.txt");
+        cout << "Patient details not found!" << endl;
+    }
+
+    _getch();
 }

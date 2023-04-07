@@ -18,13 +18,15 @@ void displayMenu()
     cout << "2. Search for a patient" << endl;
     cout << "3. View patient records" << endl;
     cout << "4. Schedule an appointment" << endl;
-    cout << "5. Edit patient records" << endl;
-    cout << "6. Generate statistics" << endl;
-    cout << "7. Change password" << endl;
-    cout << "8. Help" << endl;
-    cout << "9. Exit" << endl;
+    cout << "5. View appointments" << endl;
+    cout << "6. Edit patient records" << endl;
+    cout << "7. Delete patient records" << endl;
+    cout << "8. Generate statistics" << endl;
+    cout << "9. Change password" << endl;
+    cout << "10. Help" << endl;
+    cout << "11. Exit" << endl;
     cout << "==================================" << endl;
-    cout << "Enter your choice (1-9): ";
+    cout << "Enter your choice (1-11): ";
 }
 
 void help()
@@ -66,21 +68,27 @@ int main()
                 viewAppointment();
                 break;
             case 6:
-                generateStatistics();
+                editPatientDetails();
                 break;
             case 7:
-                changePassword();
+                deletePatient();
                 break;
             case 8:
-                help();
+                generateStatistics();
                 break;
             case 9:
+                changePassword();
+                break;
+            case 10:
+                help();
+                break;
+            case 11:
                 exit(0);
                 break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
             }
-        } while (choice != 8);
+        } while (choice != 11);
     }
     return 0;
 }
