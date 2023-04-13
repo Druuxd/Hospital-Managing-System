@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <vector>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -331,7 +332,6 @@ void generateStatistics()
 
 void editPatientDetails()
 {
-
     string name, gender, address, phone, line;
     int age;
 
@@ -344,23 +344,21 @@ void editPatientDetails()
     if (file.is_open())
     {
         // Use a temporary file to store the updated patient data
-        ofstream tempFile("temp.txt", ios::app);
+        ofstream tempFile("temp.txt");
 
         bool patientFound = false;
         while (getline(file, line))
         {
-            size_t pos = 0;
+            // Create a stringstream from the line read from the file
+            stringstream ss(line);
+
+            // Parse the patient data from the stringstream
             string token;
             vector<string> tokens;
-
-            // Parse the patient data from the line in the file
-            while ((pos = line.find(",")) != string::npos)
+            while (getline(ss, token, ','))
             {
-                token = line.substr(0, pos);
                 tokens.push_back(token);
-                line.erase(0, pos + 1);
             }
-            tokens.push_back(line);
 
             // If the patient is found, allow the user to edit their details
             if (tokens.size() == 5 && tokens[0] == name)
@@ -381,7 +379,7 @@ void editPatientDetails()
                 getline(cin >> ws, phone);
 
                 // Write the updated patient data to the temporary file
-                tempFile << name << ", " << age << ", " << gender << ", " << address << ", " << phone << endl;
+                tempFile << name << "," << age << "," << gender << "," << address << "," << phone << endl;
 
                 cout << "Patient details updated successfully!" << endl;
             }
@@ -413,6 +411,7 @@ void editPatientDetails()
 
     _getch();
 }
+
 void deletePatient()
 {
     cout << "=== Delete a Patient ===" << endl;
@@ -450,7 +449,11 @@ void deletePatient()
             }
             else
             {
-                outputFile << line << endl;
+                outputFile << tokens[0] << ",";
+                outputFile << tokens[1] << ",";
+                outputFile << tokens[2] << ",";
+                outputFile << tokens[3] << ",";
+                outputFile << tokens[4] << endl;
             }
         }
     }
@@ -460,26 +463,11 @@ void deletePatient()
 
     if (found)
     {
-        // reopen the files to read and write the shifted data
-        inputFile.open("temp.txt");
-        outputFile.open("patients.txt");
+        // delete the original file
+        remove("patients.txt");
 
-        // shift the data up by one line
-        string prevLine;
-        while (getline(inputFile, line))
-        {
-            if (!prevLine.empty())
-            {
-                outputFile << prevLine << endl;
-            }
-            prevLine = line;
-        }
-
-        inputFile.close();
-        remove("temp.txt");
-
-        // write the last line to the output file
-        outputFile << prevLine << endl;
+        // rename the temporary file to the original file name
+        rename("temp.txt", "patients.txt");
 
         cout << "Patient details deleted successfully!" << endl;
     }
