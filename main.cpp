@@ -35,7 +35,7 @@ void help()
     cout << "This program is a simple hospital management system." << endl;
     cout << "It allows you to add, view patient records, as well as schedule and view appointments." << endl;
     cout << "To use the program, select one of the 8 possible options." << endl;
-    _getch(); // Awat press of a key
+    _getch(); // Await press of a key
 }
 
 int main()
