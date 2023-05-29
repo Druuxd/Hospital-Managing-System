@@ -21,6 +21,8 @@ bool verifyPassword()
     {
         cout << "PASSWORD (tries left: " << maxTries - tries << "): ";
 
+        i = 0;
+
         do
         {
             ch = getch(); // Get character from console

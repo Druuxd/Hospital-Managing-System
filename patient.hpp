@@ -16,13 +16,15 @@ private:
     string gender;
     string adress;
     string phone;
+    string CNP;
     int age;
 
 public:
     // Constructor
-    Patient(string n, int a, string g, string ad, string p)
+    Patient(string n, string id, int a, string g, string ad, string p)
     {
         name = n;
+        CNP = id;
         gender = g;
         adress = ad;
         phone = p;
@@ -32,6 +34,11 @@ public:
     string getName()
     {
         return name;
+    }
+
+    string getCNP()
+    {
+        return CNP;
     }
 
     string getGender()
@@ -61,7 +68,7 @@ public:
         ofstream file("patients.txt", ios::app);
         if (file.is_open())
         {
-            file << name << ", " << age << ", " << gender << ", " << adress << ", " << phone << endl;
+            file << name << "," << CNP << "," << age << "," << gender << "," << adress << "," << phone << endl;
             file.close();
         }
         else
@@ -69,21 +76,20 @@ public:
             cout << "Error opening file." << endl;
         }
     }
-
-    // Declaration of 2 functions not yet defined
-    void viewPatientRecords();
-    void registerPatient();
 };
 
 void registerPatient()
 {
-    string name, gender, adress, phone;
+    string name, CNP, gender, adress, phone;
     int age;
 
     cout << "=== Register a New Patient ===" << endl;
 
     cout << "Enter patient name: ";
     getline(cin >> ws, name);
+
+    cout << "Enter patient CNP: ";
+    getline(cin >> ws, CNP);
 
     cout << "Enter patient age: ";
     cin >> age;
@@ -97,12 +103,12 @@ void registerPatient()
     cout << "Enter patient phone number: ";
     getline(cin >> ws, phone);
 
-    Patient patient(name, age, gender, adress, phone);
+    Patient patient(name, CNP, age, gender, adress, phone);
     patient.saveToFile(); // Could have done the same as the scheduleAppointment() function
 
     cout << "Patient registered succefully!" << endl;
 
-    _getch();
+    system("pause");
 }
 
 void viewPatientRecords()
@@ -131,9 +137,9 @@ void viewPatientRecords()
 
             tokens.push_back(line);
 
-            if (tokens.size() == 5)
+            if (tokens.size() == 6)
             {
-                Patient patient(tokens[0], stoi(tokens[1]), tokens[2], tokens[3], tokens[4]);
+                Patient patient(tokens[0], tokens[1], stoi(tokens[2]), tokens[3], tokens[4], tokens[5]);
                 patients.push_back(patient);
             }
         }
@@ -146,14 +152,13 @@ void viewPatientRecords()
             {
                 Patient patient = patients[i];
                 cout << "Name: " << patient.getName() << endl;
+                cout << "CNP: " << patient.getCNP() << endl;
                 cout << "Age: " << patient.getAge() << endl;
                 cout << "Gender: " << patient.getGender() << endl;
                 cout << "Address: " << patient.getAdress() << endl;
                 cout << "Phone: " << patient.getPhone() << endl;
                 cout << endl;
             }
-            // Await input before returning to the menu
-            _getch();
         }
         else
         {
@@ -166,21 +171,21 @@ void viewPatientRecords()
     {
         cout << "Error opening file." << endl;
     }
+    system("pause");
 }
 
 void searchPatient()
 {
     // Open file patients for reading
     ifstream file("patients.txt");
-
-    cout << "Enter patient name: ";
-    string patientName;
-    getline(cin >> ws, patientName);
-
     if (file.is_open())
     {
-        vector<Patient> patients; // Create a vectore to store the patients
+        vector<Patient> patients; // Create a vector to store the patients
         string line;
+
+        cout << "Enter patient name: ";
+        string patientName;
+        getline(cin >> ws, patientName);
 
         while (getline(file, line)) // Read every line
         {
@@ -197,46 +202,65 @@ void searchPatient()
 
             tokens.push_back(line);
 
-            if (tokens.size() == 5)
+            if (tokens.size() == 6)
             {
-                Patient patient(tokens[0], stoi(tokens[1]), tokens[2], tokens[3], tokens[4]);
+                Patient patient(tokens[0], tokens[1], stoi(tokens[2]), tokens[3], tokens[4], tokens[5]);
                 patients.push_back(patient);
             }
         }
 
         if (patients.size() > 0)
         {
-            bool found = false;
+            vector<Patient> matchingPatients;
 
             for (int i = 0; i < patients.size(); i++)
             {
                 Patient patient = patients[i];
                 if (patient.getName() == patientName)
                 {
-                    found = true;
-
-                    cout << "=== Patient Details ===" << endl;
-                    cout << "Name: " << patient.getName() << endl;
-                    cout << "Age: " << patient.getAge() << endl;
-                    cout << "Gender: " << patient.getGender() << endl;
-                    cout << "Address: " << patient.getAdress() << endl;
-                    cout << "Phone: " << patient.getPhone() << endl;
-
-                    break;
+                    matchingPatients.push_back(patient);
                 }
             }
 
-            if (!found)
+            if (matchingPatients.size() == 0)
             {
                 cout << "Patient not found." << endl;
             }
+            else if (matchingPatients.size() == 1)
+            {
+                cout << "=== Patient Details ===" << endl;
+                cout << "Name: " << matchingPatients[0].getName() << endl;
+                cout << "CNP: " << matchingPatients[0].getCNP() << endl;
+                cout << "Age: " << matchingPatients[0].getAge() << endl;
+                cout << "Gender: " << matchingPatients[0].getGender() << endl;
+                cout << "Address: " << matchingPatients[0].getAdress() << endl;
+                cout << "Phone: " << matchingPatients[0].getPhone() << endl;
+            }
+            else
+            {
+                cout << "Multiple patients found with name '" << patientName << "'. \nPlease enter the patient CNP:" << endl;
+                string patientCNP;
+                getline(cin >> ws, patientCNP);
 
-            _getch();
+                for (int i = 0; i < matchingPatients.size(); i++)
+                {
+                    Patient patient = matchingPatients[i];
+                    if (patient.getCNP() == patientCNP)
+                    {
+                        cout << "=== Patient Details ===" << endl;
+                        cout << "Name: " << matchingPatients[i].getName() << endl;
+                        cout << "CNP: " << matchingPatients[i].getCNP() << endl;
+                        cout << "Age: " << matchingPatients[i].getAge() << endl;
+                        cout << "Gender: " << matchingPatients[i].getGender() << endl;
+                        cout << "Address: " << matchingPatients[i].getAdress() << endl;
+                        cout << "Phone: " << matchingPatients[i].getPhone() << endl;
+                    }
+                }
+            }
         }
         else
         {
             cout << "No patients found." << endl;
-            _getch();
         }
 
         file.close();
@@ -244,8 +268,8 @@ void searchPatient()
     else
     {
         cout << "Error opening file." << endl;
-        _getch();
     }
+    system("pause");
 }
 
 void generateStatistics()
@@ -272,15 +296,16 @@ void generateStatistics()
 
             tokens.push_back(line);
 
-            if (tokens.size() == 5)
+            if (tokens.size() == 6)
             {
                 string name = tokens[0];
-                int age = stoi(tokens[1]);
-                string gender = tokens[2];
-                string address = tokens[3];
-                string phone = tokens[4];
+                string CNP = tokens[1];
+                int age = stoi(tokens[2]);
+                string gender = tokens[3];
+                string address = tokens[4];
+                string phone = tokens[5];
 
-                Patient patient(name, age, gender, address, phone);
+                Patient patient(name, CNP, age, gender, address, phone);
                 patients.push_back(patient);
             }
         }
@@ -314,8 +339,6 @@ void generateStatistics()
             cout << "Number of Male Patients: " << numMale << endl;
             cout << "Number of Female Patients: " << numFemale << endl;
             cout << "Average Age of Patients: " << (double)totalAge / numPatients << endl;
-
-            _getch();
         }
         else
         {
@@ -328,80 +351,118 @@ void generateStatistics()
     {
         cout << "Error opening file." << endl;
     }
+    system("pause");
 }
 
 void editPatientDetails()
 {
-    string name, gender, address, phone, line;
+    string name, CNP, gender, address, phone, line;
     int age;
 
-    // Get the name of the patient to be edited
     cout << "Enter the name of the patient to edit: ";
     getline(cin >> ws, name);
 
-    // Open the patients file for both reading and writing
-    fstream file("patients.txt");
+    ifstream file("patients.txt");
     if (file.is_open())
     {
-        // Use a temporary file to store the updated patient data
-        ofstream tempFile("temp.txt");
-
-        bool patientFound = false;
+        vector<Patient> patients;
         while (getline(file, line))
         {
-            // Create a stringstream from the line read from the file
-            stringstream ss(line);
-
-            // Parse the patient data from the stringstream
+            size_t pos = 0;
             string token;
             vector<string> tokens;
-            while (getline(ss, token, ','))
+
+            while ((pos = line.find(",")) != string::npos)
             {
+                token = line.substr(0, pos);
                 tokens.push_back(token);
+                line.erase(0, pos + 1);
             }
 
-            // If the patient is found, allow the user to edit their details
-            if (tokens.size() == 5 && tokens[0] == name)
+            tokens.push_back(line);
+
+            if (tokens.size() == 6)
             {
-                patientFound = true;
-
-                // Get the updated patient details from the user
-                cout << "Enter the patient's new age: ";
-                cin >> age;
-
-                cout << "Enter the patient's new gender(M/F): ";
-                getline(cin >> ws, gender);
-
-                cout << "Enter the patient's new address: ";
-                getline(cin >> ws, address);
-
-                cout << "Enter the patient's new phone number: ";
-                getline(cin >> ws, phone);
-
-                // Write the updated patient data to the temporary file
-                tempFile << name << "," << age << "," << gender << "," << address << "," << phone << endl;
-
-                cout << "Patient details updated successfully!" << endl;
-            }
-            else
-            {
-                // If the patient is not found, write their data to the temporary file as-is
-                tempFile << line << endl;
+                Patient patient(tokens[0], tokens[1], stoi(tokens[2]), tokens[3], tokens[4], tokens[5]);
+                patients.push_back(patient);
             }
         }
 
-        // Close the file streams
         file.close();
-        tempFile.close();
 
-        // Delete the old patients file and rename the temporary file to the original file name
-        remove("patients.txt");
-        rename("temp.txt", "patients.txt");
+        bool patientFound = false;
+        for (int i = 0; i < patients.size(); i++)
+        {
+            Patient patient = patients[i];
+            if (patient.getName() == name)
+            {
+                if (!patientFound)
+                {
+                    patientFound = true;
+                    cout << "Enter the patient CNP: ";
+                    getline(cin >> ws, CNP);
+                }
 
-        // If the patient was not found, display an error message
+                if (patient.getCNP() == CNP)
+                {
+                    cout << "=== Patient Details ===" << endl;
+                    cout << "Name: " << patient.getName() << endl;
+                    cout << "CNP: " << patient.getCNP() << endl;
+                    cout << "Age: " << patient.getAge() << endl;
+                    cout << "Gender: " << patient.getGender() << endl;
+                    cout << "Address: " << patient.getAdress() << endl;
+                    cout << "Phone: " << patient.getPhone() << endl;
+
+                    cout << "Enter the patient's new CNP: ";
+                    getline(cin >> ws, CNP);
+
+                    cout << "Enter the patient's new age: ";
+                    cin >> age;
+
+                    cout << "Enter the patient's new gender(M/F): ";
+                    getline(cin >> ws, gender);
+
+                    cout << "Enter the patient's new address: ";
+                    getline(cin >> ws, address);
+
+                    cout << "Enter the patient's new phone number: ";
+                    getline(cin >> ws, phone);
+
+                    // Update the patient's details
+                    patient = Patient(name, CNP, age, gender, address, phone);
+                    patients[i] = patient;
+
+                    cout << "Patient details updated successfully!" << endl;
+                    break;
+                }
+            }
+        }
+
         if (!patientFound)
         {
             cout << "Patient not found." << endl;
+        }
+
+        // Update the patients file with the modified data
+        ofstream outputFile("patients.txt");
+        if (outputFile.is_open())
+        {
+            for (int i = 0; i < patients.size(); i++)
+            {
+                Patient patient = patients[i];
+                outputFile << patient.getName() << ",";
+                outputFile << patient.getCNP() << ",";
+                outputFile << patient.getAge() << ",";
+                outputFile << patient.getGender() << ",";
+                outputFile << patient.getAdress() << ",";
+                outputFile << patient.getPhone() << endl;
+            }
+
+            outputFile.close();
+        }
+        else
+        {
+            cout << "Error opening file." << endl;
         }
     }
     else
@@ -409,73 +470,96 @@ void editPatientDetails()
         cout << "Error opening file." << endl;
     }
 
-    _getch();
+    system("pause");
 }
 
 void deletePatient()
 {
-    cout << "=== Delete a Patient ===" << endl;
+    string name, CNP, line;
 
-    string name;
-    cout << "Enter the patient's name: ";
+    cout << "Enter the name of the patient to delete: ";
     getline(cin >> ws, name);
 
-    ifstream inputFile("patients.txt");
-    ofstream outputFile("temp.txt");
-
-    bool found = false;
-    string line;
-
-    while (getline(inputFile, line))
+    ifstream file("patients.txt");
+    if (file.is_open())
     {
-        size_t pos = 0;
-        string token;
-        vector<string> tokens;
-
-        while ((pos = line.find(",")) != string::npos)
+        vector<Patient> patients;
+        while (getline(file, line))
         {
-            token = line.substr(0, pos);
-            tokens.push_back(token);
-            line.erase(0, pos + 1);
-        }
+            size_t pos = 0;
+            string token;
+            vector<string> tokens;
 
-        tokens.push_back(line);
-
-        if (tokens.size() == 5)
-        {
-            if (tokens[0] == name)
+            while ((pos = line.find(",")) != string::npos)
             {
-                found = true;
+                token = line.substr(0, pos);
+                tokens.push_back(token);
+                line.erase(0, pos + 1);
             }
-            else
+
+            tokens.push_back(line);
+
+            if (tokens.size() == 6)
             {
-                outputFile << tokens[0] << ",";
-                outputFile << tokens[1] << ",";
-                outputFile << tokens[2] << ",";
-                outputFile << tokens[3] << ",";
-                outputFile << tokens[4] << endl;
+                Patient patient(tokens[0], tokens[1], stoi(tokens[2]), tokens[3], tokens[4], tokens[5]);
+                patients.push_back(patient);
             }
         }
-    }
 
-    inputFile.close();
-    outputFile.close();
+        file.close();
 
-    if (found)
-    {
-        // delete the original file
-        remove("patients.txt");
+        bool patientFound = false;
+        for (int i = 0; i < patients.size(); i++)
+        {
+            Patient patient = patients[i];
+            if (patient.getName() == name)
+            {
+                if (!patientFound)
+                {
+                    patientFound = true;
+                    cout << "Enter the patient CNP: ";
+                    getline(cin >> ws, CNP);
+                }
 
-        // rename the temporary file to the original file name
-        rename("temp.txt", "patients.txt");
+                if (patient.getCNP() == CNP)
+                {
+                    patients.erase(patients.begin() + i);
+                    cout << "Patient deleted successfully!" << endl;
+                    break;
+                }
+            }
+        }
 
-        cout << "Patient details deleted successfully!" << endl;
+        if (!patientFound)
+        {
+            cout << "Patient not found." << endl;
+        }
+
+        // Update the patients file with the modified data
+        ofstream outputFile("patients.txt");
+        if (outputFile.is_open())
+        {
+            for (int i = 0; i < patients.size(); i++)
+            {
+                Patient patient = patients[i];
+                outputFile << patient.getName() << ",";
+                outputFile << patient.getCNP() << ",";
+                outputFile << patient.getAge() << ",";
+                outputFile << patient.getGender() << ",";
+                outputFile << patient.getAdress() << ",";
+                outputFile << patient.getPhone() << endl;
+            }
+
+            outputFile.close();
+        }
+        else
+        {
+            cout << "Error opening file." << endl;
+        }
     }
     else
     {
-        remove("temp.txt");
-        cout << "Patient details not found!" << endl;
+        cout << "Error opening file." << endl;
     }
-
-    _getch();
+    system("pause");
 }

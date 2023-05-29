@@ -6,6 +6,7 @@
 #include "patient.hpp"
 #include "appointment.hpp"
 #include "password.hpp"
+#include "doctor.hpp"
 
 using namespace std;
 
@@ -23,10 +24,12 @@ void displayMenu()
     cout << "7. Delete patient records" << endl;
     cout << "8. Generate statistics" << endl;
     cout << "9. Change password" << endl;
-    cout << "10. Help" << endl;
-    cout << "11. Exit" << endl;
+    cout << "10. View doctors" << endl;
+    cout << "11. Help" << endl;
+    cout << "12. Exit" << endl;
+    // cout << "13. Exit" << endl;
     cout << "==================================" << endl;
-    cout << "Enter your choice (1-11): ";
+    cout << "Enter your choice (1-12): ";
 }
 
 void help()
@@ -34,7 +37,7 @@ void help()
     cout << "=== Help ===" << endl;
     cout << "This program is a simple hospital management system." << endl;
     cout << "It allows you to add, view patient records, as well as schedule and view appointments." << endl;
-    cout << "To use the program, select one of the 8 possible options." << endl;
+    cout << "To use the program, select one of the 12 possible options." << endl;
     _getch(); // Await press of a key
 }
 
@@ -80,15 +83,21 @@ int main()
                 changePassword();
                 break;
             case 10:
-                help();
+                viewDoctors();
                 break;
             case 11:
+                help();
+                break;
+            case 12:
                 exit(0);
+                break;
+            case 13:
+                // doctorPatients();
                 break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
             }
-        } while (choice != 11);
+        } while (choice != 13);
     }
     return 0;
 }

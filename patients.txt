@@ -1,4 +1,2 @@
-Razvan Flo,22,x,x,x
-Razvan Flor, 21, M, Undeva in balkani, 0783218923
-Razvan Flore, 21, M, Undeva in balkani, 0783218923
-Razvan Florea, 21, M, Undeva in balkani, 0783218923
+Melak Sebastian,987543216,12,M,akas,n-are
+Melak Sebastian,1234,22,M,Calea Bucuresti,ik
